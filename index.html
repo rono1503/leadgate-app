@@ -467,8 +467,169 @@
       color: var(--md-sys-color-on-surface-variant);
     }
 
+    /* Pricing */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      align-items: start;
+    }
+
+    .pricing-card {
+      background: var(--md-sys-color-surface-bright);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      border-radius: 20px;
+      padding: 40px 32px;
+      position: relative;
+      transition: all 0.2s;
+    }
+
+    .pricing-card:hover {
+      border-color: var(--md-sys-color-primary);
+    }
+
+    .pricing-card.featured {
+      border-color: var(--md-sys-color-primary);
+      background: linear-gradient(180deg, var(--md-sys-color-primary-container) 0%, var(--md-sys-color-surface-bright) 100%);
+      transform: scale(1.03);
+      z-index: 1;
+    }
+
+    .pricing-card.featured .pricing-card-label {
+      background: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+    }
+
+    .pricing-card-label {
+      display: inline-flex;
+      padding: 4px 14px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--md-sys-color-surface-variant);
+      color: var(--md-sys-color-on-surface-variant);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .pricing-card h3 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .pricing-card .pricing-subtitle {
+      font-size: 14px;
+      color: var(--md-sys-color-on-surface-variant);
+      margin-bottom: 20px;
+    }
+
+    .pricing-amount {
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--md-sys-color-primary);
+      margin-bottom: 4px;
+    }
+
+    .pricing-amount .currency {
+      font-size: 20px;
+      font-weight: 600;
+      vertical-align: super;
+    }
+
+    .pricing-period {
+      font-size: 14px;
+      color: var(--md-sys-color-on-surface-variant);
+      margin-bottom: 24px;
+    }
+
+    .pricing-features {
+      list-style: none;
+      margin-bottom: 28px;
+    }
+
+    .pricing-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 14px;
+      color: var(--md-sys-color-on-surface);
+      line-height: 1.5;
+    }
+
+    .pricing-features li .material-symbols-outlined {
+      font-size: 18px;
+      color: var(--md-sys-color-secondary);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .pricing-features li.muted {
+      color: var(--md-sys-color-on-surface-variant);
+      opacity: 0.5;
+    }
+
+    .pricing-note {
+      font-size: 13px;
+      color: var(--md-sys-color-on-surface-variant);
+      text-align: center;
+      margin-top: 32px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.7;
+    }
+
+    .pricing-footnote {
+      margin-top: 48px;
+      padding: 28px;
+      background: var(--md-sys-color-surface-dim);
+      border-radius: 16px;
+      text-align: center;
+    }
+
+    .pricing-footnote h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .pricing-footnote p {
+      font-size: 14px;
+      color: var(--md-sys-color-on-surface-variant);
+      line-height: 1.6;
+    }
+
+    .pricing-footnote .stats-grid {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .pricing-footnote .stat-item {
+      text-align: center;
+    }
+
+    .pricing-footnote .stat-item .num {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--md-sys-color-primary);
+    }
+
+    .pricing-footnote .stat-item .label {
+      font-size: 13px;
+      color: var(--md-sys-color-on-surface-variant);
+      margin-top: 2px;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
+      .pricing-card.featured { transform: none; }
+      .pricing-footnote .stats-grid { gap: 24px; }
       .hero h1 { font-size: 34px; }
       .hero-stats { gap: 24px; flex-wrap: wrap; }
       .section-title { font-size: 28px; }
@@ -487,6 +648,7 @@
     </a>
     <div class="nav-links">
       <a href="#how-it-works">How it Works</a>
+      <a href="#pricing">Pricing</a>
       <a href="#industries">Industries</a>
       <a href="#contact" class="btn btn-primary">Get Started</a>
     </div>
@@ -589,6 +751,100 @@
           <div class="diff-icon"><span class="material-symbols-outlined">trending_up</span></div>
           <h3>Outcome-Focused</h3>
           <p>We charge for results, not seats. You pay one predictable monthly fee — no surprise overages, no per-user pricing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing">
+    <div class="container">
+      <div class="section-label">Pricing</div>
+      <h2 class="section-title">Simple, Predictable, Fair</h2>
+      <p class="section-desc">No surprise fees, no per-seat licensing. You pay a flat monthly retainer for the managed service, and we can run ads on your behalf with a transparent markup.</p>
+
+      <div class="pricing-grid">
+        <!-- Starter -->
+        <div class="pricing-card">
+          <div class="pricing-card-label">Free Trial</div>
+          <h3>Starter</h3>
+          <div class="pricing-subtitle">Perfect for testing the waters</div>
+          <div class="pricing-amount"><span class="currency">$</span>0</div>
+          <div class="pricing-period">free first month — no card required</div>
+          <ul class="pricing-features">
+            <li><span class="material-symbols-outlined">check</span> Branded landing page (your domain)</li>
+            <li><span class="material-symbols-outlined">check</span> Lead capture form with dashboard access</li>
+            <li><span class="material-symbols-outlined">check</span> Google Business Profile optimization guide</li>
+            <li><span class="material-symbols-outlined">check</span> SMS notification on new leads</li>
+            <li class="muted"><span class="material-symbols-outlined">close</span> Call tracking number</li>
+            <li class="muted"><span class="material-symbols-outlined">close</span> AI Voice Agent</li>
+            <li class="muted"><span class="material-symbols-outlined">close</span> Paid ad management</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline" style="width:100%;justify-content:center">Get Started Free</a>
+        </div>
+
+        <!-- Managed -->
+        <div class="pricing-card featured">
+          <div class="pricing-card-label">Most Popular</div>
+          <h3>Managed</h3>
+          <div class="pricing-subtitle">Done-for-you lead generation</div>
+          <div class="pricing-amount"><span class="currency">$</span>79</div>
+          <div class="pricing-period">per month, per client</div>
+          <ul class="pricing-features">
+            <li><span class="material-symbols-outlined">check</span> Branded landing page (your domain)</li>
+            <li><span class="material-symbols-outlined">check</span> Lead capture + real-time dashboard</li>
+            <li><span class="material-symbols-outlined">check</span> Google Business Profile management</li>
+            <li><span class="material-symbols-outlined">check</span> Nextdoor business page + monitoring</li>
+            <li><span class="material-symbols-outlined">check</span> SEO content for local keywords</li>
+            <li><span class="material-symbols-outlined">check</span> SMS alerts on every new lead</li>
+            <li><span class="material-symbols-outlined">check</span> Call tracking number (Twilio)</li>
+            <li><span class="material-symbols-outlined">check</span> Weekly lead report</li>
+            <li class="muted"><span class="material-symbols-outlined">close</span> AI Voice Agent</li>
+            <li class="muted"><span class="material-symbols-outlined">close</span> Paid ad management</li>
+          </ul>
+          <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Get Started</a>
+        </div>
+
+        <!-- Growth -->
+        <div class="pricing-card">
+          <div class="pricing-card-label">For Scaling</div>
+          <h3>Growth</h3>
+          <div class="pricing-subtitle">Everything in Managed + ads</div>
+          <div class="pricing-amount"><span class="currency">$</span>79</div>
+          <div class="pricing-period">per month + ad management fee</div>
+          <ul class="pricing-features">
+            <li><span class="material-symbols-outlined">check</span> Everything in Managed</li>
+            <li><span class="material-symbols-outlined">check</span> Google Local Service Ads setup & management</li>
+            <li><span class="material-symbols-outlined">check</span> Facebook/Instagram ad campaigns</li>
+            <li><span class="material-symbols-outlined">check</span> AI Voice Agent — answers inbound calls</li>
+            <li><span class="material-symbols-outlined">check</span> A/B testing landing pages</li>
+            <li><span class="material-symbols-outlined">check</span> Monthly performance review</li>
+            <li style="padding-top:16px;border-top:1px solid var(--md-sys-color-outline-variant);font-weight:600;color:var(--md-sys-color-primary)"><span class="material-symbols-outlined">percent</span> Ad markup: 20% on ad spend</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline" style="width:100%;justify-content:center">Contact Us</a>
+        </div>
+      </div>
+
+      <div class="pricing-note">
+        No long-term contracts. Cancel anytime. Ad costs billed separately at cost + 20% management fee.
+        AI Voice Agent requires Twilio compliance approval (in progress).
+      </div>
+    </div>
+  </section>
+
+  <!-- Ad Markup Deep Dive -->
+  <section style="background: var(--md-sys-color-surface-dim);padding:60px 0">
+    <div class="container">
+      <div class="pricing-footnote">
+        <h4>How the Ad Markup Works</h4>
+        <p>You spend $500/mo on Google Local Service Ads. We charge you <strong>$600/mo</strong> ($500 ad spend + $100 management fee).<br>
+        We handle targeting, bidding, optimization, and reporting — you only pay for what converts.</p>
+        <div class="stats-grid">
+          <div class="stat-item"><div class="num">$500</div><div class="label">Your ad spend</div></div>
+          <div class="stat-item"><div class="num" style="color:var(--md-sys-color-secondary)">$100</div><div class="label">Our management fee (20%)</div></div>
+          <div class="stat-item"><div class="num">$600</div><div class="label">Your total</div></div>
+          <div class="stat-item"><div class="num">$79</div><div class="label">Monthly retainer</div></div>
+          <div class="stat-item"><div class="num" style="color:var(--md-sys-color-secondary)">$179</div><div class="label">Your total monthly</div></div>
         </div>
       </div>
     </div>
