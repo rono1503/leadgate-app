@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeadGate — Admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,200" rel="stylesheet">
+  <style>
+    :root {
+      --md-sys-color-primary: #0D47A1;
+      --md-sys-color-on-primary: #FFFFFF;
+      --md-sys-color-primary-container: #D1E4FF;
+      --md-sys-color-on-primary-container: #001B3E;
+      --md-sys-color-secondary: #00695C;
+      --md-sys-color-surface: #FDFBFF;
+      --md-sys-color-on-surface: #1B1B1F;
+      --md-sys-color-surface-variant: #E0E3EB;
+      --md-sys-color-on-surface-variant: #43474E;
+      --md-sys-color-outline: #73777F;
+      --md-sys-color-outline-variant: #C3C7CF;
+      --md-sys-color-error: #BA1A1A;
+      --md-sys-color-surface-dim: #DADCE4;
+      --md-sys-color-surface-bright: #FDFBFF;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--md-sys-color-surface);
+      color: var(--md-sys-color-on-surface);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Login overlay */
+    #login-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--md-sys-color-surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    #login-overlay.hidden { display: none; }
+    .login-box {
+      width: 360px;
+      padding: 40px;
+      text-align: center;
+    }
+    .login-box .logo-icon {
+      width: 56px; height: 56px;
+      background: var(--md-sys-color-primary);
+      color: white;
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+    .login-box h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .login-box p { font-size: 14px; color: var(--md-sys-color-on-surface-variant); margin-bottom: 24px; }
+    .login-box input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid var(--md-sys-color-outline-variant);
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 15px;
+      margin-bottom: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .login-box input:focus { border-color: var(--md-sys-color-primary); }
+    .login-box .error { color: var(--md-sys-color-error); font-size: 13px; margin-bottom: 12px; display: none; }
+    .login-box .btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      background: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+      transition: background 0.2s;
+    }
+    .login-box .btn:hover { background: #0B3D8A; }
+
+    /* App Layout */
+    #app { display: none; }
+    #app.visible { display: block; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--md-sys-color-outline-variant);
+      background: var(--md-sys-color-surface);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+    .topbar-left .logo-icon {
+      width: 32px; height: 32px;
+      background: var(--md-sys-color-primary);
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .topbar-left h1 { font-size: 16px; font-weight: 600; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .topbar-right .badge {
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-primary);
+    }
+    .topbar-right .logout-btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      border: 1px solid var(--md-sys-color-outline-variant);
+      background: transparent;
+      cursor: pointer;
+      color: var(--md-sys-color-on-surface-variant);
+      transition: all 0.2s;
+    }
+    .topbar-right .logout-btn:hover { border-color: var(--md-sys-color-error); color: var(--md-sys-color-error); }
+
+    /* Dashboard */
+    .dashboard { padding: 24px; max-width: 1200px; margin: 0 auto; }
+
+    /* Stats bar */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--md-sys-color-surface-bright);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .stat-card .stat-value { font-size: 28px; font-weight: 700; color: var(--md-sys-color-primary); }
+    .stat-card .stat-label { font-size: 13px; color: var(--md-sys-color-on-surface-variant); margin-top: 4px; }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+    .filters select, .filters input {
+      padding: 10px 14px;
+      border: 1px solid var(--md-sys-color-outline-variant);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 13px;
+      background: var(--md-sys-color-surface);
+      outline: none;
+      min-width: 180px;
+    }
+    .filters select:focus, .filters input:focus { border-color: var(--md-sys-color-primary); }
+    .filters .filter-count { font-size: 13px; color: var(--md-sys-color-on-surface-variant); margin-left: auto; }
+
+    /* Lead table */
+    .lead-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: var(--md-sys-color-surface-bright);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .lead-table th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--md-sys-color-on-surface-variant);
+      background: var(--md-sys-color-surface-variant);
+      border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    }
+    .lead-table td {
+      padding: 12px 16px;
+      font-size: 14px;
+      border-bottom: 1px solid var(--md-sys-color-outline-variant);
+      vertical-align: middle;
+    }
+    .lead-table tr:last-child td { border-bottom: none; }
+    .lead-table tr:hover td { background: rgba(13, 71, 161, 0.03); }
+
+    .partner-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+      background: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-primary);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .status-new { background: #E8F5E9; color: #2E7D32; }
+    .status-contacted { background: #FFF3E0; color: #E65100; }
+    .status-qualified { background: #E3F2FD; color: #1565C0; }
+    .status-converted { background: #F3E5F5; color: #6A1B9A; }
+    .status-lost { background: #FFEBEE; color: #C62828; }
+
+    .lead-actions select {
+      padding: 4px 8px;
+      border: 1px solid var(--md-sys-color-outline-variant);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 12px;
+      background: var(--md-sys-color-surface);
+      cursor: pointer;
+      outline: none;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--md-sys-color-on-surface-variant);
+    }
+    .empty-state .material-symbols-outlined { font-size: 48px; margin-bottom: 12px; }
+    .empty-state h3 { font-size: 18px; margin-bottom: 8px; color: var(--md-sys-color-on-surface); }
+    .empty-state p { font-size: 14px; }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--md-sys-color-on-surface-variant);
+    }
+    .spinner {
+      width: 24px; height: 24px;
+      border: 3px solid var(--md-sys-color-outline-variant);
+      border-top-color: var(--md-sys-color-primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 768px) {
+      .lead-table { font-size: 13px; }
+      .lead-table th, .lead-table td { padding: 8px 10px; }
+      .filters { flex-direction: column; }
+      .filters select, .filters input { width: 100%; min-width: unset; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="login-overlay">
+  <div class="login-box">
+    <div class="logo-icon">⇥</div>
+    <h2>LeadGate Dashboard</h2>
+    <p>Enter your passcode to manage leads</p>
+    <div class="error" id="login-error">Incorrect passcode</div>
+    <input type="password" id="passcode-input" placeholder="Passcode" autocomplete="off">
+    <button class="btn" onclick="login()">Unlock Dashboard</button>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="logo-icon">⇥</div>
+      <h1>LeadGate</h1>
+      <div style="font-size:12px;color:var(--md-sys-color-on-surface-variant);margin-left:4px">/ Admin</div>
+    </div>
+    <div class="topbar-right">
+      <span class="badge" id="total-badge">0 leads</span>
+      <button class="logout-btn" onclick="logout()">Lock</button>
+    </div>
+  </div>
+
+  <div class="dashboard">
+    <!-- Stats -->
+    <div class="stats-row" id="stats-row">
+      <div class="stat-card"><div class="stat-value" id="s-total">—</div><div class="stat-label">Total Leads</div></div>
+      <div class="stat-card"><div class="stat-value" id="s-new">—</div><div class="stat-label">New</div></div>
+      <div class="stat-card"><div class="stat-value" id="s-today">—</div><div class="stat-label">Today</div></div>
+      <div class="stat-card"><div class="stat-value" id="s-partners">—</div><div class="stat-label">Partners</div></div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <select id="filter-partner" onchange="applyFilters()">
+        <option value="all">All Partners</option>
+      </select>
+      <select id="filter-status" onchange="applyFilters()">
+        <option value="all">All Statuses</option>
+        <option value="new">New</option>
+        <option value="contacted">Contacted</option>
+        <option value="qualified">Qualified</option>
+        <option value="converted">Converted</option>
+        <option value="lost">Lost</option>
+      </select>
+      <input type="text" id="filter-search" placeholder="Search name, phone, email..." oninput="applyFilters()">
+      <span class="filter-count" id="filter-count"></span>
+    </div>
+
+    <!-- Table -->
+    <div id="leads-container">
+      <div class="loading"><div class="spinner"></div>Loading leads...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE = 'https://leadgate-backend.railway.app/api';
+  const PASSCODE_HASH = '3c9909afecaa54f2a70e7e5c6f9d8c8f3b9e8a7d6c5b4a3f2e1d0c9b8a7f6e5'; // SHA-256 of "leadgate2026"
+
+  async function sha256(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  // Login
+  async function login() {
+    const input = document.getElementById('passcode-input');
+    const hash = await sha256(input.value);
+    if (hash === PASSCODE_HASH) {
+      localStorage.setItem('leadgate_passcode', input.value);
+      document.getElementById('login-overlay').classList.add('hidden');
+      document.getElementById('app').classList.add('visible');
+      loadLeads();
+    } else {
+      document.getElementById('login-error').style.display = 'block';
+      input.value = '';
+    }
+  }
+
+  // Auto-login
+  (async function() {
+    const stored = localStorage.getItem('leadgate_passcode');
+    if (stored) {
+      const hash = await sha256(stored);
+      if (hash === PASSCODE_HASH) {
+        document.getElementById('login-overlay').classList.add('hidden');
+        document.getElementById('app').classList.add('visible');
+        loadLeads();
+      }
+    }
+    document.getElementById('passcode-input').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+  })();
+
+  function logout() {
+    localStorage.removeItem('leadgate_passcode');
+    document.getElementById('login-overlay').classList.remove('hidden');
+    document.getElementById('app').classList.remove('visible');
+    document.getElementById('passcode-input').value = '';
+  }
+
+  // Data
+  let allLeads = [];
+  let partners = [];
+
+  async function loadLeads() {
+    const container = document.getElementById('leads-container');
+    container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading leads...</div>';
+    try {
+      const pass = localStorage.getItem('leadgate_passcode');
+      const [leadsRes, partnersRes] = await Promise.all([
+        fetch(`${API_BASE}/leads`, {
+          headers: { 'X-Admin-Passcode': pass }
+        }),
+        fetch(`${API_BASE}/partners`, {
+          headers: { 'X-Admin-Passcode': pass } 
+        })
+      ]);
+      if (!leadsRes.ok || !partnersRes.ok) throw new Error('Auth failed');
+      allLeads = await leadsRes.json();
+      partners = await partnersRes.json();
+      renderFilters();
+      applyFilters();
+    } catch(e) {
+      container.innerHTML = `<div class="empty-state">
+        <span class="material-symbols-outlined">error</span>
+        <h3>Could not connect</h3>
+        <p>Make sure the backend is running. ${e.message}</p>
+      </div>`;
+    }
+  }
+
+  const statusLabels = { new: 'New', contacted: 'Contacted', qualified: 'Qualified', converted: 'Converted', lost: 'Lost' };
+  const statusClasses = { new: 'status-new', contacted: 'status-contacted', qualified: 'status-qualified', converted: 'status-converted', lost: 'status-lost' };
+
+  function getPartnerName(id) {
+    const p = partners.find(p => p.id === id);
+    return p ? p.name : id;
+  }
+
+  function renderFilters() {
+    const sel = document.getElementById('filter-partner');
+    sel.innerHTML = '<option value="all">All Partners</option>' +
+      partners.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+  }
+
+  function applyFilters() {
+    const partnerFilter = document.getElementById('filter-partner').value;
+    const statusFilter = document.getElementById('filter-status').value;
+    const search = document.getElementById('filter-search').value.toLowerCase();
+
+    let filtered = allLeads.filter(l => {
+      if (partnerFilter !== 'all' && l.partner_id !== partnerFilter) return false;
+      if (statusFilter !== 'all' && l.status !== statusFilter) return false;
+      if (search) {
+        const match = (l.name + ' ' + l.phone + ' ' + (l.email||'') + ' ' + (l.address||'')).toLowerCase();
+        if (!match.includes(search)) return false;
+      }
+      return true;
+    });
+
+    // Stats
+    document.getElementById('s-total').textContent = allLeads.length;
+    document.getElementById('s-new').textContent = allLeads.filter(l => l.status === 'new').length;
+    const today = new Date().toISOString().slice(0,10);
+    document.getElementById('s-today').textContent = allLeads.filter(l => (l.created_at||'').startsWith(today)).length;
+    document.getElementById('s-partners').textContent = partners.length;
+    document.getElementById('total-badge').textContent = allLeads.length + ' leads';
+    document.getElementById('filter-count').textContent = filtered.length + ' of ' + allLeads.length;
+
+    renderTable(filtered);
+  }
+
+  function renderTable(leads) {
+    const container = document.getElementById('leads-container');
+    if (leads.length === 0) {
+      container.innerHTML = `<div class="empty-state">
+        <span class="material-symbols-outlined">inbox</span>
+        <h3>No leads yet</h3>
+        <p>Leads will appear here once they start coming in.</p>
+      </div>`;
+      return;
+    }
+
+    const rows = leads.map(l => {
+      const date = l.created_at ? new Date(l.created_at).toLocaleDateString('en-US', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}) : '—';
+      return `<tr>
+        <td><span class="partner-tag">${getPartnerName(l.partner_id)}</span></td>
+        <td><strong>${l.name}</strong></td>
+        <td>${l.phone}</td>
+        <td>${l.email || '—'}</td>
+        <td>${l.service || l.property_type || '—'}</td>
+        <td style="font-size:12px;color:var(--md-sys-color-on-surface-variant)">${date}</td>
+        <td><span class="status-badge ${statusClasses[l.status]||'status-new'}">${statusLabels[l.status]||'New'}</span></td>
+        <td class="lead-actions">
+          <select onchange="updateStatus('${l.id}', this.value)">
+            <option value="new" ${l.status==='new'?'selected':''}>New</option>
+            <option value="contacted" ${l.status==='contacted'?'selected':''}>Contacted</option>
+            <option value="qualified" ${l.status==='qualified'?'selected':''}>Qualified</option>
+            <option value="converted" ${l.status==='converted'?'selected':''}>Converted</option>
+            <option value="lost" ${l.status==='lost'?'selected':''}>Lost</option>
+          </select>
+        </td>
+      </tr>`;
+    }).join('');
+
+    container.innerHTML = `<table class="lead-table">
+      <thead><tr>
+        <th>Partner</th><th>Name</th><th>Phone</th><th>Email</th><th>Service</th><th>Date</th><th>Status</th><th>Action</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  }
+
+  async function updateStatus(leadId, status) {
+    try {
+      const pass = localStorage.getItem('leadgate_passcode');
+      await fetch(`${API_BASE}/leads/${leadId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Passcode': pass },
+        body: JSON.stringify({ status })
+      });
+      const lead = allLeads.find(l => l.id === leadId);
+      if (lead) lead.status = status;
+      applyFilters();
+    } catch(e) {
+      console.error('Failed to update status', e);
+    }
+  }
+</script>
+</body>
+</html>
